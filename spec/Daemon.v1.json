@@ -1,0 +1,192 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Daemon",
+    "version": "1.0.0",
+    "description": "Daemon API."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:63636"
+    }
+  ],
+  "paths": {
+    "/actions/reboot": {
+      "post": {
+        "summary": "Reboot computer",
+        "operationId": "post-actions-reboot",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "description": "Triggers a reboot on the host device.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actions/shutdown": {
+      "post": {
+        "summary": "Shutdown computer",
+        "operationId": "post-actions-shutdown",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "description": "Triggers a shutdown on the host device.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actions/restart": {
+      "post": {
+        "summary": "Restart daemon",
+        "operationId": "post-actions-restart",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+              }
+            }
+          }
+        },
+        "description": "Restarts the daemon software on the host device."
+      }
+    },
+    "/actions/logout": {
+      "post": {
+        "summary": "Log out current user",
+        "operationId": "post-actions-logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "description": "Logs out current user from the computer.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "Daemon token": {
+        "name": "Authorization",
+        "type": "apiKey",
+        "in": "header"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Returned when the request body is incorrectly formatted.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "./Backend.v1.json#/components/schemas/ParameterErrorArray"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Returned when a requested operation could not be completed due to an error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "error"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Token": []
+    }
+  ]
+}
