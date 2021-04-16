@@ -3,7 +3,11 @@
   "info": {
     "title": "Daemon",
     "version": "1.0.0",
-    "description": "Daemon API."
+    "description": "Daemon API.",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/mergemocha/remotr-api-spec/blob/master/LICENSE"
+    }
   },
   "servers": [
     {
@@ -37,7 +41,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+                "$ref": "./Server.v1.json#/components/schemas/ShutdownParameters"
               }
             }
           }
@@ -70,7 +74,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+                "$ref": "./Server.v1.json#/components/schemas/ShutdownParameters"
               }
             }
           }
@@ -102,7 +106,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+                "$ref": "./Server.v1.json#/components/schemas/ShutdownParameters"
               }
             }
           }
@@ -136,7 +140,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "./Backend.v1.json#/components/schemas/ShutdownParameters"
+                "$ref": "./Server.v1.json#/components/schemas/ShutdownParameters"
               }
             }
           }
@@ -159,7 +163,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "./Backend.v1.json#/components/schemas/ParameterErrorArray"
+              "$ref": "./Server.v1.json#/components/schemas/ParameterErrorArray"
             }
           }
         }
@@ -186,7 +190,7 @@
   },
   "security": [
     {
-      "Token": []
+      "Daemon token": []
     }
   ]
 }

@@ -3,7 +3,11 @@
   "info": {
     "title": "Server",
     "version": "1.0.0",
-    "description": "Central server API. "
+    "description": "Central server API. ",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/mergemocha/remotr-api-spec/blob/master/LICENSE"
+    }
   },
   "servers": [
     {
@@ -107,25 +111,6 @@
             "description": "Internal Server Error"
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "token": {
-                    "type": "string",
-                    "description": "Session token"
-                  }
-                },
-                "required": [
-                  "token"
-                ]
-              }
-            }
-          },
-          "description": ""
-        },
         "description": "Logs out (invalidates token) of a user.\n\nNote: This operation will always return a 200 OK response, even if the token is invalid. This is for security reasons."
       }
     },
@@ -228,6 +213,9 @@
         "security": [
           {
             "Daemon token": []
+          },
+          {
+            "Session token": []
           }
         ]
       }
@@ -475,9 +463,9 @@
         }
       }
     },
-    "/daemons/auth": {
+    "/daemons/register": {
       "post": {
-        "summary": "Authenticate daemon and begin handshake",
+        "summary": "Register daemon",
         "operationId": "post-daemons-auth",
         "responses": {
           "200": {
@@ -487,13 +475,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "otp": {
+                    "token": {
                       "type": "string",
                       "description": "One-time password/token for daemon to authenticate itself with when providing its token to /daemons/register."
                     }
                   },
                   "required": [
-                    "otp"
+                    "token"
                   ]
                 }
               }
@@ -514,13 +502,13 @@
             "Server secret": []
           }
         ],
-        "description": ""
+        "description": "Registers the interest to identify from a daemon, providing a token in response, should the daemon know the server secret."
       },
       "parameters": []
     },
-    "/daemons/register": {
+    "/daemons/identify": {
       "post": {
-        "summary": "Register daemon and complete handshake",
+        "summary": "Identify daemon",
         "operationId": "post-daemons-register",
         "responses": {
           "200": {
@@ -557,7 +545,7 @@
         },
         "security": [
           {
-            "One-time password/token": []
+            "Daemon token": []
           }
         ],
         "requestBody": {
@@ -568,8 +556,10 @@
               }
             }
           }
-        }
-      }
+        },
+        "description": "Identifies the daemon on boot or when initial registration handshake completes."
+      },
+      "parameters": []
     },
     "/user/auth": {
       "post": {
@@ -735,11 +725,6 @@
         "type": "apiKey",
         "in": "header"
       },
-      "One-time password/token": {
-        "name": "X-OTP",
-        "type": "apiKey",
-        "in": "header"
-      },
       "Daemon token": {
         "name": "Authorization",
         "type": "apiKey",
@@ -748,7 +733,7 @@
     },
     "responses": {
       "400": {
-        "description": "Returned when the request body is incorrectly formatted.",
+        "description": "Bad Request",
         "content": {
           "application/json": {
             "schema": {
@@ -758,7 +743,7 @@
         }
       },
       "555": {
-        "description": "Returned when the daemon is unable to complete the requested operation due to an operating system error.",
+        "description": "Daemon Returned Error",
         "content": {
           "application/json": {
             "schema": {

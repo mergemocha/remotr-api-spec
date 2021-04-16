@@ -1,0 +1,16 @@
+{
+  "env": {
+    "es2020": true,
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "globalReturn": true
+    },
+    "sourceType": "module"
+  },
+  "extends": "standard",
+  "plugins": [
+    "eslint-plugin-html"
+  ]
+}
