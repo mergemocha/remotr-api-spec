@@ -1,0 +1,30 @@
+{
+  "name": "remotr-api-spec",
+  "version": "1.0.0",
+  "description": "OpenAPI v3 specs for Remotr server and daemon APIs. This repository also hosts generated documentation for the API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint:server && npm run lint:daemon",
+    "lint:server": "openapi lint spec/Server.v1.json",
+    "lint:daemon": "openapi lint spec/Daemon.v1.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mergemocha/remotr-api-spec.git"
+  },
+  "author": "Linus Willner, Anna Smati, Panu Eronen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mergemocha/remotr-api-spec/issues"
+  },
+  "homepage": "https://github.com/mergemocha/remotr-api-spec#readme",
+  "devDependencies": {
+    "@redocly/openapi-cli": "1.0.0-beta.44",
+    "eslint": "^7.24.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-html": "^6.1.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1"
+  }
+}

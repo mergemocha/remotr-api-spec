@@ -1,0 +1,770 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Server",
+    "version": "1.0.0",
+    "description": "Central server API. ",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/mergemocha/remotr-api-spec/blob/master/LICENSE"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/user/login": {
+      "parameters": [],
+      "post": {
+        "summary": "Authenticate user",
+        "operationId": "post-user-login",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "Session token"
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "Initial authentication endpoint; provides session token if authentication information is valid.",
+        "parameters": [],
+        "security": [
+          {
+            "Session token obtainment": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "username": "root",
+                    "password": "password"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "summary": "Log out user",
+        "operationId": "post-user-logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "Logs out (invalidates token) of a user.\n\nNote: This operation will always return a 200 OK response, even if the token is invalid. This is for security reasons."
+      }
+    },
+    "/daemons": {
+      "get": {
+        "summary": "Get all daemons",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Daemon"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-daemons",
+        "description": "Returns all registered daemons."
+      }
+    },
+    "/daemons/{mac}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "mac",
+          "in": "path",
+          "required": true,
+          "description": "MAC address of the daemon"
+        }
+      ],
+      "get": {
+        "summary": "Get singular daemon by MAC address",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Daemon"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-daemons-mac",
+        "description": "Returns information for a specific daemon.",
+        "parameters": []
+      },
+      "delete": {
+        "summary": "De-register daemon",
+        "operationId": "delete-daemons-mac",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "De-registers a daemon, invalidating its token.",
+        "security": [
+          {
+            "Daemon token": []
+          },
+          {
+            "Session token": []
+          }
+        ]
+      }
+    },
+    "/daemons/{mac}/boot": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "mac",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Boot computer",
+        "operationId": "post-daemons-mac-boot",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "Triggers a Wake-on-LAN request to the target computer.\n\nNote: Unless the client is acting out of its boundaries (Unauthorized/hitting the rate limit/internal error), this endpoint will always return 200 OK as the Wake-on-LAN UDP packet predictably returns no response to indicate that the computer was reached and that startup was triggered."
+      }
+    },
+    "/daemons/{mac}/reboot": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "mac",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Reboot computer",
+        "operationId": "post-daemons-mac-reboot",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "523": {
+            "description": "Origin Is Unreachable"
+          },
+          "555": {
+            "$ref": "#/components/responses/555"
+          }
+        },
+        "description": "Restarts the target computer.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShutdownParameters"
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/daemons/{mac}/shutdown": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "mac",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Shutdown computer",
+        "operationId": "post-daemons-mac-shutdown",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "523": {
+            "description": "Origin Is Unreachable"
+          },
+          "555": {
+            "$ref": "#/components/responses/555"
+          }
+        },
+        "description": "Shuts down the target computer.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShutdownParameters"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/daemons/{mac}/restart": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "mac",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Restart daemon",
+        "operationId": "post-daemons-mac-restart",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "523": {
+            "description": "Origin Is Unreachable"
+          },
+          "555": {
+            "$ref": "#/components/responses/555"
+          }
+        },
+        "description": "Restarts the daemon software on the target computer.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShutdownParameters"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/daemons/{mac}/logout": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "mac",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Log out user from computer",
+        "operationId": "post-daemons-mac-logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "523": {
+            "description": "Origin Is Unreachable"
+          },
+          "555": {
+            "$ref": "#/components/responses/555"
+          }
+        },
+        "description": "Logs out the current active user from the target computer.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShutdownParameters"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/daemons/register": {
+      "post": {
+        "summary": "Register daemon",
+        "operationId": "post-daemons-auth",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "One-time password/token for daemon to authenticate itself with when providing its token to /daemons/register."
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Server secret": []
+          }
+        ],
+        "description": "Registers the interest to identify from a daemon, providing a token in response, should the daemon know the server secret."
+      },
+      "parameters": []
+    },
+    "/daemons/identify": {
+      "post": {
+        "summary": "Identify daemon",
+        "operationId": "post-daemons-register",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "wssAddress": {
+                      "type": "string",
+                      "description": "The address of the WebSocket server that the daemon will connect to for sending status updates."
+                    }
+                  },
+                  "required": [
+                    "wssAddress"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Daemon token": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Daemon"
+              }
+            }
+          }
+        },
+        "description": "Identifies the daemon on boot or when initial registration handshake completes."
+      },
+      "parameters": []
+    },
+    "/user/auth": {
+      "post": {
+        "summary": "Validate stored session token",
+        "operationId": "post-user-auth",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "Endpoint to check stored session token validity.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "Session token"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InvalidParameterError": {
+        "title": "InvalidParameterError",
+        "type": "object",
+        "description": "Describes that a submitted parameter is invalid, is the wrong type, does not conform to required format and so on. Automatically generated by express-validator.",
+        "properties": {
+          "msg": {
+            "type": "string"
+          },
+          "param": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "msg",
+          "param",
+          "location"
+        ]
+      },
+      "ParameterErrorArray": {
+        "title": "ParameterErrorArray",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/InvalidParameterError"
+        },
+        "description": "Returned when the request body is incorrectly formatted."
+      },
+      "Daemon": {
+        "title": "Daemon",
+        "type": "object",
+        "description": "Represents a computer running the daemon.",
+        "x-examples": {
+          "Example": {
+            "_id": "5099803df3f4948bd2f98391",
+            "mac": "FF-FF-FF-FF-FF-FF",
+            "ip": "192.168.0.1",
+            "user": "user",
+            "hostname": "localhost"
+          }
+        },
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Internal ID from MongoDB"
+          },
+          "mac": {
+            "type": "string",
+            "description": "MAC address of host device"
+          },
+          "ip": {
+            "type": "string",
+            "description": "IP address of host device"
+          },
+          "user": {
+            "type": "string",
+            "description": "Current logged in user"
+          },
+          "hostname": {
+            "type": "string",
+            "description": "Host name of the host device"
+          }
+        },
+        "required": [
+          "_id",
+          "mac",
+          "ip",
+          "user",
+          "hostname"
+        ]
+      },
+      "ShutdownParameters": {
+        "title": "ShutdownParameters",
+        "type": "object",
+        "description": "Represents parameters to be passed to the Windows \"shutdown\" command.",
+        "properties": {
+          "force": {
+            "type": "boolean",
+            "description": "Represents whether /f will be passed."
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Represents the value to be passed to the /t parameter. Valid range is 0-315360000 seconds (10 years), default is 30 seconds."
+          },
+          "comment": {
+            "type": "string",
+            "description": "Represents the value passed to the /c parameter. Maximum length is 512 characters."
+          }
+        },
+        "required": [
+          "force",
+          "timeout",
+          "comment"
+        ],
+        "x-examples": {
+          "Example": {
+            "force": true,
+            "timeout": 0,
+            "comment": "Immediate shutdown triggered by Remotr"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Session token": {
+        "name": "Authorization",
+        "type": "apiKey",
+        "in": "header"
+      },
+      "Session token obtainment": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "Server secret": {
+        "name": "X-Secret",
+        "type": "apiKey",
+        "in": "header"
+      },
+      "Daemon token": {
+        "name": "Authorization",
+        "type": "apiKey",
+        "in": "header"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ParameterErrorArray"
+            }
+          }
+        }
+      },
+      "555": {
+        "description": "Daemon Returned Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "error"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Session token": []
+    }
+  ]
+}
