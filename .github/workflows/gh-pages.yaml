@@ -20,6 +20,8 @@ jobs:
         run: sudo npm i -g npm
       - name: Install dependencies
         run: npm i
+      - name: Build docs
+        run: chmod +x scripts/build.sh && scripts/build.sh
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
