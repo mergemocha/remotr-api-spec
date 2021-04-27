@@ -649,10 +649,6 @@
           }
         },
         "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Internal ID from MongoDB"
-          },
           "mac": {
             "type": "string",
             "description": "MAC address of host device"
@@ -671,7 +667,6 @@
           }
         },
         "required": [
-          "_id",
           "mac",
           "ip",
           "user",

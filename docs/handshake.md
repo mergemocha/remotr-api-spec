@@ -12,4 +12,4 @@ In future, the API expects the daemon to `POST /daemons/identify` each time it s
 
 ## De-registration
 
-In order for a daemon to be de-registered, the API expects `DELETE /daemons/:mac` peformed, with the `mac` request parameter set to the daemon MAC address. In this instance, the `Authorization` parameter accepts both daemon and user tokens, meaning that this operation can also be initiated client-side.
+In order for a daemon to be de-registered, the API expects the daemon to perform `DELETE /daemons/:mac`, with the `mac` request parameter set to its own MAC address.
