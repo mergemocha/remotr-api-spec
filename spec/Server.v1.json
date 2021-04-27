@@ -22,24 +22,7 @@
         "operationId": "post-user-login",
         "responses": {
           "200": {
-            "description": "OK",
-            "headers": {},
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "string",
-                      "description": "Session token"
-                    }
-                  },
-                  "required": [
-                    "token"
-                  ]
-                }
-              }
-            }
+            "description": "OK"
           },
           "400": {
             "$ref": "#/components/responses/400"
@@ -582,25 +565,7 @@
             "description": "Internal Server Error"
           }
         },
-        "description": "Endpoint to check stored session token validity.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "token": {
-                    "type": "string",
-                    "description": "Session token"
-                  }
-                },
-                "required": [
-                  "token"
-                ]
-              }
-            }
-          }
-        }
+        "description": "Endpoint to check stored session token validity."
       }
     }
   },
@@ -707,9 +672,9 @@
     },
     "securitySchemes": {
       "Session token": {
-        "name": "Authorization",
+        "name": "token",
         "type": "apiKey",
-        "in": "header"
+        "in": "cookie"
       },
       "Session token obtainment": {
         "type": "http",
