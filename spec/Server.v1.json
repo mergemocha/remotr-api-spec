@@ -382,16 +382,7 @@
             "$ref": "#/components/responses/555"
           }
         },
-        "description": "Restarts the daemon software on the target computer.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ShutdownParameters"
-              }
-            }
-          }
-        }
+        "description": "Restarts the daemon software on the target computer."
       }
     },
     "/daemons/{mac}/logout": {
