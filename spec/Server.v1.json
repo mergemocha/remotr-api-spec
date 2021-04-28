@@ -642,6 +642,13 @@
         "title": "ShutdownParameters",
         "type": "object",
         "description": "Represents parameters to be passed to the Windows \"shutdown\" command.",
+        "x-examples": {
+          "Example": {
+            "force": true,
+            "timeout": 0,
+            "comment": "Immediate shutdown triggered by Remotr"
+          }
+        },
         "properties": {
           "force": {
             "type": "boolean",
@@ -654,18 +661,6 @@
           "comment": {
             "type": "string",
             "description": "Represents the value passed to the /c parameter. Maximum length is 512 characters."
-          }
-        },
-        "required": [
-          "force",
-          "timeout",
-          "comment"
-        ],
-        "x-examples": {
-          "Example": {
-            "force": true,
-            "timeout": 0,
-            "comment": "Immediate shutdown triggered by Remotr"
           }
         }
       }
