@@ -476,7 +476,25 @@
             "Server secret": []
           }
         ],
-        "description": "Registers the interest to identify from a daemon, providing a token in response, should the daemon know the server secret."
+        "description": "Registers the interest to identify from a daemon, providing a token in response, should the daemon know the server secret.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mac": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "mac"
+                ]
+              }
+            }
+          },
+          "description": ""
+        }
       },
       "parameters": []
     },
