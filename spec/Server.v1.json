@@ -382,16 +382,7 @@
             "$ref": "#/components/responses/555"
           }
         },
-        "description": "Restarts the daemon software on the target computer.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ShutdownParameters"
-              }
-            }
-          }
-        }
+        "description": "Restarts the daemon software on the target computer."
       }
     },
     "/daemons/{mac}/logout": {
@@ -470,8 +461,36 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParameterErrorArray"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "reason"
+                  ]
+                }
+              }
+            }
           },
           "429": {
             "description": "Too Many Requests"
@@ -485,7 +504,25 @@
             "Server secret": []
           }
         ],
-        "description": "Registers the interest to identify from a daemon, providing a token in response, should the daemon know the server secret."
+        "description": "Registers the interest to identify from a daemon, providing a token in response, should the daemon know the server secret.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mac": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "mac"
+                ]
+              }
+            }
+          },
+          "description": ""
+        }
       },
       "parameters": []
     },
@@ -642,6 +679,13 @@
         "title": "ShutdownParameters",
         "type": "object",
         "description": "Represents parameters to be passed to the Windows \"shutdown\" command.",
+        "x-examples": {
+          "Example": {
+            "force": true,
+            "timeout": 0,
+            "comment": "Immediate shutdown triggered by Remotr"
+          }
+        },
         "properties": {
           "force": {
             "type": "boolean",
@@ -654,18 +698,6 @@
           "comment": {
             "type": "string",
             "description": "Represents the value passed to the /c parameter. Maximum length is 512 characters."
-          }
-        },
-        "required": [
-          "force",
-          "timeout",
-          "comment"
-        ],
-        "x-examples": {
-          "Example": {
-            "force": true,
-            "timeout": 0,
-            "comment": "Immediate shutdown triggered by Remotr"
           }
         }
       }
